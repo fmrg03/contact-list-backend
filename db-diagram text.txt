@@ -1,0 +1,22 @@
+Table users {
+  id integer [primary key]
+  username varchar
+  role varchar
+  created_at timestamp
+}
+
+Table contacts {
+  id integer [primary key]
+  name varchar
+  surname varchar
+  cellphone varchar
+  alias varchar
+  user_id integer
+  whatsapp boolean
+  image varchar
+  email varchar
+  category varchar
+  created_at timestamp
+}
+
+Ref: contacts.user_id > users.id // many-to-one
