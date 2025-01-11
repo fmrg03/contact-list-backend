@@ -12,7 +12,7 @@ import { UsersModule } from './users/users.module';
     port: 3307,
     entities: [__dirname + '/**/*.entity{.ts,.js}'],
     synchronize: true,
-  }), UsersModule],
+  })],
   controllers: [],
   providers: [],
 })

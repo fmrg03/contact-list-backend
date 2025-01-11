@@ -1,30 +1,29 @@
-import { IsDate, IsIn, IsNotEmpty, IsString, Length } from 'class-validator';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Contacts } from 'src/contacts/entities/contact.entity';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
-@Entity()
+@Entity('users')
 export class Users {
   @PrimaryGeneratedColumn()
-  id: string;
+  id: number;
 
-  @Column()
-  @IsNotEmpty({ message: 'El username no puede estar vacío.' })
-  @IsString({ message: 'El nombre debe ser una cadena de texto.' })
+  @Column({ type: 'varchar', length: 25, unique: true })
   username: string;
 
-  @Column()
-  @Length(8, 20, {
-    message: 'La contraseña debe tener entre 8 y 20 caracteres.',
-  })
-  @IsNotEmpty({ message: 'La password no puede estar vacía.' })
+  @Column({ type: 'varchar', length: 20 })
   password: string;
 
-  @Column()
-  @IsIn(['admin', 'user', 'moderator'], {
-    message: 'El rol debe ser admin, user o moderator.',
-  }) /// revisar
-  role: string = 'user';
+  @Column({ type: 'varchar' })
+  role: string;
 
-  @Column()
-  @IsDate({ message: 'La fecha debe ser un valor de tipo Date válido.' })
+  @CreateDateColumn()
   created_at: Date;
+
+  @OneToMany(() => Contacts, (contact) => contact.user, { cascade: true })
+  contacts: Contacts[];
 }

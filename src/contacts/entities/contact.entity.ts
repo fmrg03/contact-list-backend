@@ -1,59 +1,49 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Users } from 'src/users/entities/user.entity';
 import {
-  IsBoolean,
-  IsDate,
-  IsEmail,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
-@Entity()
-export class Contact {
+@Entity('contacts')
+export class Contacts {
   @PrimaryGeneratedColumn()
   id: string;
 
-  @Column()
-  @IsString({ message: 'El nombre debe ser una cadena de texto valida.' })
-  @IsNotEmpty({ message: 'El nombre no puede estar vacío.' })
+  @Column({ type: 'varchar', length: 255 })
   name: string;
 
-  @Column()
-  @IsString({ message: 'El apellido debe ser una cadena de texto.' })
-  @IsOptional()
+  @Column({ type: 'varchar', length: 255, nullable: true })
   lastName: string;
 
-  @Column()
-  @IsOptional()
-  cellphone: string;
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  phoneNumber: string;
 
-  @Column()
-  @IsOptional()
-  @IsString({ message: 'El alias debe ser una cadena de texto.' })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   alias: string;
 
-  @Column()
+  @Column({ type: 'int' })
   user_id: number;
 
-  @Column()
-  @IsBoolean()
-  @IsOptional()
-  whatsapp: boolean = false;
+  @Column({ type: 'bool' })
+  whatsapp: boolean;
 
-  @Column()
-  @IsOptional()
+  @Column({ type: 'varchar', length: 255, nullable: true })
   image: string;
 
-  @Column()
-  @IsEmail({ require_tld: true }, { message: 'Debe proporcionar un correo electrónico válido.' })
-  @IsOptional()
+  @Column({ type: 'varchar', length: 255, nullable: true, unique: true })
   email: string;
 
-  @Column()
-  @IsOptional()
-  category: string = 'contactos';
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  category: string;
 
-  @Column()
-  @IsDate({ message: 'La fecha debe ser un valor de tipo Date válido.' })
+  @CreateDateColumn()
   created_at: Date;
+
+  @ManyToOne(() => Users, (user) => user.contacts, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'user_id' })
+  user: Users;
 }

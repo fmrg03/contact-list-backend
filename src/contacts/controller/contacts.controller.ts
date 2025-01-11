@@ -7,8 +7,8 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-import { CreateContactDto } from '../dto/create-contact.dto';
-import { UpdateContactDto } from '../dto/update-contact.dto';
+import { ContactDto } from '../dto/contact.dto';
+import { UpdateContactDto } from '../dto/contact.dto';
 import { ContactsService } from '../service/contacts.service';
 
 @Controller('contacts')
@@ -16,8 +16,8 @@ export class ContactsController {
   constructor(private readonly contactsService: ContactsService) {}
 
   @Post()
-  create(@Body() createContactDto: CreateContactDto) {
-    return this.contactsService.create(createContactDto);
+  create(@Body() ContactDto: ContactDto) {
+    return this.contactsService.create(ContactDto);
   }
 
   @Get()

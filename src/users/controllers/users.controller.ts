@@ -6,18 +6,21 @@ import {
   Patch,
   Param,
   Delete,
+  UseInterceptors,
+  NotFoundException,
 } from '@nestjs/common';
 import { UsersService } from '../services/users.service';
-import { CreateUserDto } from '../dto/create-user.dto';
-import { UpdateUserDto } from '../dto/update-user.dto';
+import { UserDto, UpdateUserDto } from '../dto/user.dto';
+import { usernameInterceptor } from 'src/interceptors/username.interceptor';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  @UseInterceptors(usernameInterceptor) // Aplica el interceptor
+  create(@Body() newUser: UserDto) {
+    return this.usersService.create(newUser);
   }
 
   @Get()
@@ -25,18 +28,27 @@ export class UsersController {
     return this.usersService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  @Get('/username/:username')
+  async findOnebyUsername(@Param('username') username: string) {
+    const user = await this.usersService.findByUsername(username);
+    if (!user) {
+      throw new NotFoundException(`Username: '${username}', not found`);
+    }
+    return user;
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
+  @Get('/id/:id')
+  findOne(@Param('id') id: number) {
+    return this.usersService.findOne(id);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  @Patch('/update/:id')
+  update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
+    return this.usersService.update(id, updateUserDto);
+  }
+
+  @Delete('/:id')
+  remove(@Param('id') id: number) {
+    return this.usersService.remove(id);
   }
 }
